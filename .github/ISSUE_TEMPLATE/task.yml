@@ -1,0 +1,40 @@
+name: Task
+description: A scoped piece of work that is not a defect.
+title: "[task] "
+labels: ["status:triage"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: In scope / out of scope
+      placeholder: |
+        in:  ...
+        out: ...
+    validations:
+      required: true
+  - type: dropdown
+    id: risk_tier
+    attributes:
+      label: Risk tier
+      options: [low, medium, high, critical]
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options: [P0, P1, P2, P3]
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criterion
+    validations:
+      required: true

@@ -1,0 +1,7 @@
+# Every change needs the owner; the paths that decide the outcome need the owner twice.
+*                       @OuisAlhetar
+
+/src/                   @OuisAlhetar
+/tests/                 @OuisAlhetar
+/scripts/               @OuisAlhetar
+/.github/               @OuisAlhetar

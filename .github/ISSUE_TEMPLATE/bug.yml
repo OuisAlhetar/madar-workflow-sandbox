@@ -1,0 +1,50 @@
+name: Defect
+description: Something behaves differently from the documented contract.
+title: "[defect] "
+labels: ["status:triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Evidence first. An issue without a quoted line is not actionable.
+  - type: input
+    id: evidence
+    attributes:
+      label: Evidence
+      description: "Path:line that shows the defect, plus the documented rule it breaks."
+      placeholder: "src/Price.php:47 — README rule 2 says round the subtotal once"
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed vs expected
+      placeholder: |
+        observed: three lines of 335 give 102
+        expected: 101
+    validations:
+      required: true
+  - type: dropdown
+    id: risk_tier
+    attributes:
+      label: Risk tier
+      description: How much of the system this touches.
+      options: [low, medium, high, critical]
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: Urgency. Separate from the risk tier.
+      options: [P0, P1, P2, P3]
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criterion
+      description: The observable fact that makes this issue done.
+      placeholder: "php tests/run.php prints 3 passed, 0 failed"
+    validations:
+      required: true

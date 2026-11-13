@@ -1,0 +1,53 @@
+name: ci
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP
+        run: php --version
+
+      - name: Syntax
+        run: |
+          find src tests scripts -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: DB-free gate (no driver, no DSN, no credentials in the code)
+        run: |
+          set -eu
+          if grep -rInE '\b(PDO|mysqli|pg_connect|DB_HOST|DB_PASSWORD|DB_USER|DSN)\b' src tests scripts; then
+            echo "::error::database access is not allowed in this repository"
+            exit 1
+          fi
+          echo "no database access found"
+
+      - name: Gate self-check
+        run: bash scripts/gate-selfcheck.sh
+
+      - name: Self-check negative control (must fail)
+        run: |
+          set +e
+          bash scripts/gate-selfcheck.sh --self-test
+          rc=$?
+          if [ "$rc" -eq 0 ]; then
+            echo "::error::the mutation test passed; the checker does not detect a broken gate"
+            exit 1
+          fi
+          echo "mutation detected as expected (exit $rc)"
+
+      - name: Tests
+        run: php tests/run.php
+
+      - name: Runner sanity (a subset must pass even while a seeded test is red)
+        run: php tests/run.php test_single_line
