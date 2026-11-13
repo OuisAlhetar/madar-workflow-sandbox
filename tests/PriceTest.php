@@ -54,4 +54,29 @@ final class PriceTest
             throw new \AssertionError('an empty basket must total null, not 0');
         }
     }
+
+    /**
+     * Regression for #3: the half-up decision belongs to the subtotal, so a basket whose lines round
+     * individually in the other direction must follow its subtotal, not its lines.
+     *
+     * 335 thousandths is .5 of a cent: three of them are 1005, which halves up to 101 cents. Rounding
+     * each line first gives 34+34+34 = 102. The mirror case is 334 thousandths: three of them are
+     * 1002, which halves down to 100 cents, while rounding each line first gives 33+33+33 = 99.
+     */
+    public function test_rounding_boundary_is_decided_by_the_subtotal(): void
+    {
+        $price = new Price();
+        $price->add(335);
+        $price->add(335);
+        $price->add(335);
+
+        $this->assertSame(101, $price->total(), 'three lines of 335 must total 101 cents, not 102');
+
+        $mirror = new Price();
+        $mirror->add(334);
+        $mirror->add(334);
+        $mirror->add(334);
+
+        $this->assertSame(100, $mirror->total(), 'three lines of 334 must total 100 cents, not 99');
+    }
 }

@@ -35,8 +35,8 @@ final class Price
     /**
      * Total in cents, or null when the basket is empty.
      *
-     * SEEDED DEFECT: this rounds every line to cents before adding them. The contract requires the
-     * rounding to happen once, on the subtotal. Three lines of 335 must give 101, and this gives 102.
+     * The contract (README.md rule 2) rounds once, on the subtotal: three lines of 335 are 1005
+     * thousandths together, which halves up to 101 cents. Individual lines are never rounded.
      */
     public function total(): ?int
     {
@@ -44,11 +44,7 @@ final class Price
             return null;
         }
 
-        $cents = 0;
-        foreach ($this->lines as $thousandths) {
-            $cents += intdiv($thousandths + 5, 10);
-        }
-
-        return $cents;
+        // Half-up from thousandths to cents. Lines are non-negative (see add()), so intdiv is safe.
+        return intdiv($this->subtotal() + 5, 10);
     }
 }
