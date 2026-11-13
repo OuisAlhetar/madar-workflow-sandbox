@@ -55,3 +55,7 @@ if [ "$fail" = 0 ]; then
   echo "gate ok"
 fi
 exit "$fail"
+
+# negative control: this line exists only to make a PR touch a governed path.
+
+# bot-auth proof 20261113T005542Z
