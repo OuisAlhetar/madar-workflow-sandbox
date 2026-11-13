@@ -35,16 +35,10 @@ jobs:
       - name: Gate self-check
         run: bash scripts/gate-selfcheck.sh
 
-      - name: Self-check negative control (must fail)
-        run: |
-          set +e
-          bash scripts/gate-selfcheck.sh --self-test
-          rc=$?
-          if [ "$rc" -eq 0 ]; then
-            echo "::error::the mutation test passed; the checker does not detect a broken gate"
-            exit 1
-          fi
-          echo "mutation detected as expected (exit $rc)"
+      # `--self-test` breaks a copy of the gate on purpose: it exits 0 when the damage is detected and
+      # non-zero when the checker stays green on a broken gate. So the step simply has to succeed.
+      - name: Self-check negative control
+        run: bash scripts/gate-selfcheck.sh --self-test
 
       - name: Tests
         run: php tests/run.php
