@@ -40,8 +40,8 @@ jobs:
       - name: Self-check negative control
         run: bash scripts/gate-selfcheck.sh --self-test
 
-      - name: Tests
-        run: php tests/run.php
-
       - name: Runner sanity (a subset must pass even while a seeded test is red)
         run: php tests/run.php test_single_line
+
+      - name: Tests
+        run: php tests/run.php
