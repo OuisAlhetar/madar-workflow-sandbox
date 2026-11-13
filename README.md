@@ -10,13 +10,14 @@ Amounts are integer **thousandths** of the currency unit. Results are integer **
 1. `Price::subtotal()` is the exact sum of the line amounts, in thousandths.
 2. `Price::total()` rounds the **subtotal** half-up to cents. It never rounds the individual lines:
    three lines of `335` thousandths are `1005` together, which rounds to `101` cents — not `102`.
-3. `Price::total()` returns `0` when no line was added, so a caller never has to handle `null`.
+3. `Price::total()` returns `null` when no line was added, so a caller can tell "nothing" from "free".
 
 ## Status
 
-`Price::total()` rounds once, on the subtotal, and totals an empty basket as `0`.
-`tests/PriceTest.php` pins the contract: `test_three_lines_round_at_subtotal`,
-`test_single_line_still_rounds` and `test_empty_basket_is_zero`. CI is expected to be green.
+The repository is seeded with **one defect**: `total()` rounds each line and then adds, so a
+three-line basket of `335` comes out one cent too high. `tests/PriceTest.php` contains the failing test
+that exposes it (`test_three_lines_round_at_subtotal`) and a passing test that proves the suite is not
+blanket-red (`test_single_line_still_rounds`). CI is expected to be red until the defect is fixed.
 
 ## Run
 
