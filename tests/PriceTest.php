@@ -11,7 +11,7 @@ use PriceToy\Price;
  */
 final class PriceTest
 {
-    private function assertSame(int $expected, ?int $actual, string $message): void
+    private function assertSame(int $expected, int $actual, string $message): void
     {
         if ($expected !== $actual) {
             throw new \AssertionError(sprintf(
@@ -44,14 +44,12 @@ final class PriceTest
         $this->assertSame(34, $price->total(), 'a single line of 335 rounds to 34 cents');
     }
 
-    /** The second half of the contract: empty is null, never zero. */
-    public function test_empty_basket_is_null(): void
+    /** The second half of the contract: an empty basket totals 0, never null. */
+    public function test_empty_basket_is_zero(): void
     {
         $price = new Price();
 
         $this->assertSame(0, $price->lineCount(), 'a fresh basket has no lines');
-        if ($price->total() !== null) {
-            throw new \AssertionError('an empty basket must total null, not 0');
-        }
+        $this->assertSame(0, $price->total(), 'an empty basket must total 0');
     }
 }

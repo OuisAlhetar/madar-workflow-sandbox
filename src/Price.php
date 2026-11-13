@@ -33,18 +33,15 @@ final class Price
     }
 
     /**
-     * Total in cents, or null when the basket is empty.
+     * Total in cents. An empty basket totals 0, so a caller never has to handle null.
      *
      * The contract (README.md rule 2) rounds once, on the subtotal: three lines of 335 are 1005
      * thousandths together, which halves up to 101 cents. Individual lines are never rounded.
      */
-    public function total(): ?int
+    public function total(): int
     {
-        if ($this->lines === []) {
-            return null;
-        }
-
-        // Half-up from thousandths to cents. Lines are non-negative (see add()), so intdiv is safe.
+        // Half-up from thousandths to cents. Lines are non-negative (see add()), so intdiv is safe;
+        // an empty basket has subtotal 0 and therefore totals 0.
         return intdiv($this->subtotal() + 5, 10);
     }
 }
